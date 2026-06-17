@@ -1,0 +1,4 @@
+project:
+    name: customer-360-snowflake
+webserver:
+    port: "8081"

@@ -1,0 +1,125 @@
+version: 2
+
+models:
+  - name: stg_bnpl_repayments
+    description: "Bronze layer: Cleaned repayments data from the raw Snowflake BNPL dataset."
+    columns:
+      - name: payment_id
+        description: "The primary key for the repayments table."
+        tests: [unique, not_null]
+      - name: loan_id
+        description: "The foreign key linking to the loans table."
+        tests: [not_null]
+      - name: scheduled_date
+        description: "The date when the payment was scheduled."
+        tests: [not_null]
+      - name: scheduled_amount_usd
+        description: "The amount scheduled for the payment in USD."
+        tests: [not_null, is_non_negative]
+      - name: status
+        description: "The status of the payment."
+        tests:
+          - accepted_values:
+              values: [ 'paid', 'late', 'missed', 'scheduled', 'refunded' ]
+
+  - name: stg_bnpl_customers
+    description: "Bronze layer: Cleaned customers data from the raw Snowflake BNPL dataset."
+    columns:
+      - name: customer_id
+        description: "The primary key for the customers table."
+        tests: [unique, not_null]
+      - name: signup_ts
+        description: "The timestamp when the customer signed up."
+        tests: [not_null]
+      - name: kyc_tier
+        description: "The KYC tier of the customer."
+        tests:
+          - accepted_values:
+              values: ['basic', 'verified', 'premium']
+      - name: income_band
+        description: "The income band of the customer."
+        tests:
+          - accepted_values:
+              values: ['low', 'mid', 'high']
+      - name: is_closed
+        description: "Indicates if the customer's account is closed."
+        tests:
+          - accepted_values:
+              values: [TRUE, FALSE]
+
+  - name: stg_bnpl_loan_applications
+    description: "Bronze layer: Cleaned loan applications data from the raw Snowflake BNPL dataset."
+    columns:
+      - name: application_id
+        description: "The primary key for the loan applications table."
+        tests: [unique, not_null]
+      - name: customer_id
+        description: "The foreign key linking to the customers table."
+        tests: [not_null]
+      - name: merchant_id
+        description: "The foreign key linking to the merchants table."
+        tests: [not_null]
+      - name: applied_at
+        description: "The timestamp when the loan application was submitted."
+        tests: [not_null]
+      - name: amount_requested_usd
+        description: "The amount requested for the loan in USD."
+        tests: [not_null, is_non_negative]
+      - name: decision
+        description: "The decision on the loan application."
+        tests:
+          - accepted_values:
+              values: ['approved', 'declined', 'pending']
+
+  - name: stg_bnpl_merchants
+    description: "Bronze layer: Cleaned merchants data from the raw Snowflake BNPL dataset."
+    columns:
+      - name: merchant_id
+        description: "The primary key for the merchants table."
+        tests: [unique, not_null]
+      - name: merchant_name
+        description: "The name of the merchant."
+        tests: [not_null]
+      - name: onboarded_date
+        description: "The date when the merchant was onboarded."
+        tests: [not_null] 
+      - name: risk_tier
+        description: "The risk tier of the merchant."
+        tests:
+          - accepted_values:
+              values: ['lowest', 'medium', 'highest']
+  
+  - name: stg_bnpl_loans
+    description: "Bronze layer: Cleaned loans data from the raw Snowflake BNPL dataset."
+    columns:
+      - name: loan_id
+        description: "The primary key for the loans table."
+        tests: [unique, not_null]
+      - name: application_id
+        description: "The foreign key linking to the applications table."
+        tests: [not_null]
+      - name: customer_id
+        description: "The foreign key linking to the customers table."
+        tests: [not_null]
+      - name: merchant_id
+        description: "The foreign key linking to the merchants table."
+        tests: [not_null]
+      - name: principal_usd
+        description: " Amount disbursed to the merchant."
+        tests: [not_null, is_non_negative]
+      - name: term_months
+        description: "Loan term: 3, 6, or 12 months."
+        tests: [not_null, accepted_values: { values: [3, 6, 12] }]
+      - name: apr
+        description: " Annualized interest rate expressed as a decimal (e.g. `0.18` = 18%)."
+        tests: [not_null, is_non_negative]
+      - name: disbursed_at
+        description: "The timestamp when the loan was disbursed."
+        tests: [not_null]
+      - name: status
+        description: "The current status of the loan."
+        tests: [not_null,accepted_values: { values: ['active', 'paid', 'delinquent', 'written_off', 'restructured'] }]
+      - name: current_dpd
+        description: " Days past due as of snapshot. `0` for `active`/`paid` loans; positive for loans that are past due; null for `written_off`."
+        tests: [is_non_negative]
+

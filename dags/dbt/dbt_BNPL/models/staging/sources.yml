@@ -1,0 +1,12 @@
+version: 2
+
+sources:
+  - name: BNPL
+    database: RAW
+    schema: BNPL
+    tables:
+      - name: Customers
+      - name: Loans
+      - name: Loan_applications
+      - name: Merchants
+      - name: Repayments

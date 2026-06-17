@@ -1,0 +1,145 @@
+version: 2
+
+models:
+  - name: dim_Customers
+    description: "Gold layer customer dimension used for consumer-ready reporting."
+    columns:
+      - name: customer_id
+        description: "Unique customer identifier."
+        tests: [unique, not_null]
+      - name: signup_ts
+        description: "Timestamp when the customer account was created."
+      - name: dob
+        description: "Customer date of birth."
+      - name: city
+        description: "Customer city of residence at signup."
+      - name: kyc_tier
+        description: "Customer KYC verification level: basic, verified, or premium."
+      - name: income_band
+        description: "Self-reported customer income band at signup: low, mid, or high."
+      - name: is_closed
+        description: "Boolean flag indicating whether the customer closed their account."
+  
+  - name: dim_Merchants
+    description: "Gold layer merchant dimension used for consumer-ready reporting."
+    columns:
+      - name: merchant_id
+        description: "Unique merchant identifier."
+        tests: [unique, not_null]
+      - name: merchant_name
+        description: "Merchant display name."
+      - name: category
+        description: "Merchant category such as Electronics, Fashion, or Grocery."
+      - name: onboarded_date
+        description: "Date the merchant went live on PayLaterCo."
+      - name: risk_tier
+        description: "Internal merchant risk classification: A, B, or C."
+      - name: is_new_merchant
+        description: "Flag indicating whether the merchant was onboarded on or after 2025-10-01."
+  
+  - name: fct_Loan_applications
+    description: "Gold layer loan application fact table for consumer-ready reporting."
+    columns:
+      - name: application_id
+        description: "Unique loan application identifier."
+        tests: [unique, not_null]
+      - name: customer_id
+        description: "Foreign key to dim_Customers.customer_id."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_Customers')
+              field: customer_id
+      - name: merchant_id
+        description: "Foreign key to dim_Merchants.merchant_id."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_Merchants')
+              field: merchant_id
+      - name: applied_month
+        description: "Month number extracted from applied_at."
+      - name: applied_year
+        description: "Year extracted from applied_at."
+      - name: applied_year_month
+        description: "Year-month label derived from applied_at in YYYY-MM format."
+      - name: amount_requested_usd
+        description: "Requested financing amount in USD."
+      - name: decision
+        description: "Application decision status: approved, declined, or pending."
+      - name: decision_reason
+        description: "Short free-text decision reason or operator note."
+      - name: decision_at
+        description: "Timestamp when the application decision was issued."
+
+  - name: fct_Loans
+    description: "Gold layer loan fact table for consumer-ready reporting."
+    columns:
+      - name: loan_id
+        description: "Unique loan identifier."
+        tests: [unique, not_null]
+      - name: customer_id
+        description: "Foreign key to dim_Customers.customer_id."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_Customers')
+              field: customer_id
+      - name: merchant_id
+        description: "Foreign key to dim_Merchants.merchant_id."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_Merchants')
+              field: merchant_id
+      - name: application_id
+        description: "Foreign key to fct_Loan_applications.application_id."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('fct_Loan_applications')
+              field: application_id
+      - name: principal_usd
+        description: "Principal amount disbursed to the merchant in USD."
+      - name: term_months
+        description: "Loan term in months."
+      - name: apr
+        description: "Annualized interest rate expressed as a decimal."
+      - name: cohort_year
+        description: "Year extracted from disbursed_at for cohort analysis."
+      - name: cohort_month
+        description: "Month extracted from disbursed_at for cohort analysis."
+      - name: cohort_year_month
+        description: "Year-month label derived from disbursed_at in YYYY-MM format."
+      - name: loan_status
+        description: "Loan status copied from the source status field."
+      - name: current_dpd
+        description: "Days past due as of the portfolio snapshot."
+      - name: is_bad_loan
+        description: "Flag indicating a bad loan based on delinquency, write-off status, or days past due."
+  
+  - name: fct_Repayments
+    description: "Gold layer repayment fact table for consumer-ready reporting."
+    columns:
+      - name: payment_id
+        description: "Unique repayment event identifier."
+        tests: [unique, not_null]
+      - name: loan_id
+        description: "Foreign key to fct_Loans.loan_id."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('fct_Loans')
+              field: loan_id
+      - name: scheduled_date
+        description: "Installment due date."
+      - name: scheduled_amount_usd
+        description: "Scheduled installment amount in USD."
+      - name: paid_ts
+        description: "Timestamp when the customer actually paid, if paid."
+      - name: paid_amount_usd
+        description: "Amount actually paid, which can be negative for reversals."
+      - name: payment_status
+        description: "Repayment status copied from the source status field."
+      - name: is_late_or_missed
+        description: "Flag indicating whether the repayment was late or missed."

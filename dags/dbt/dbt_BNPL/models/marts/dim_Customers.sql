@@ -4,7 +4,7 @@ with customers AS (
 SELECT
     customer_id,
     signup_ts,
-    dob,
+    EXTRACT(YEAR FROM dob) AS dob,
     city,
     kyc_tier,
     income_band,

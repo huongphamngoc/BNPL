@@ -48,15 +48,17 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_Customers')
-              field: customer_id
+              arguments:
+                to: ref('dim_Customers')
+                column: customer_id
       - name: merchant_id
         description: "Foreign key to dim_Merchants.merchant_id."
         tests:
           - not_null
           - relationships:
-              to: ref('dim_Merchants')
-              field: merchant_id
+              arguments:
+                to: ref('dim_Merchants')
+                column: merchant_id
       - name: applied_month
         description: "Month number extracted from applied_at."
       - name: applied_year
@@ -83,22 +85,25 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_Customers')
-              field: customer_id
+              arguments:
+                to: ref('dim_Customers')
+                column: customer_id
       - name: merchant_id
         description: "Foreign key to dim_Merchants.merchant_id."
         tests:
           - not_null
           - relationships:
-              to: ref('dim_Merchants')
-              field: merchant_id
+              arguments:
+                to: ref('dim_Merchants')
+                column: merchant_id
       - name: application_id
         description: "Foreign key to fct_Loan_applications.application_id."
         tests:
           - not_null
           - relationships:
-              to: ref('fct_Loan_applications')
-              field: application_id
+              arguments:
+                to: ref('fct_Loan_applications')
+                column: application_id
       - name: principal_usd
         description: "Principal amount disbursed to the merchant in USD."
       - name: term_months
@@ -129,8 +134,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('fct_Loans')
-              field: loan_id
+              arguments:
+                to: ref('fct_Loans')
+                column: loan_id
       - name: scheduled_date
         description: "Installment due date."
       - name: scheduled_amount_usd

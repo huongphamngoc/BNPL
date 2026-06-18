@@ -50,7 +50,7 @@ models:
           - relationships:
               arguments:
                 to: ref('dim_Customers')
-                column: customer_id
+                field: customer_id
       - name: merchant_id
         description: "Foreign key to dim_Merchants.merchant_id."
         tests:
@@ -58,7 +58,7 @@ models:
           - relationships:
               arguments:
                 to: ref('dim_Merchants')
-                column: merchant_id
+                field: merchant_id
       - name: applied_month
         description: "Month number extracted from applied_at."
       - name: applied_year
@@ -87,7 +87,7 @@ models:
           - relationships:
               arguments:
                 to: ref('dim_Customers')
-                column: customer_id
+                field: customer_id
       - name: merchant_id
         description: "Foreign key to dim_Merchants.merchant_id."
         tests:
@@ -95,7 +95,7 @@ models:
           - relationships:
               arguments:
                 to: ref('dim_Merchants')
-                column: merchant_id
+                field: merchant_id
       - name: application_id
         description: "Foreign key to fct_Loan_applications.application_id."
         tests:
@@ -103,7 +103,7 @@ models:
           - relationships:
               arguments:
                 to: ref('fct_Loan_applications')
-                column: application_id
+                field: application_id
       - name: principal_usd
         description: "Principal amount disbursed to the merchant in USD."
       - name: term_months
@@ -136,7 +136,7 @@ models:
           - relationships:
               arguments:
                 to: ref('fct_Loans')
-                column: loan_id
+                field: loan_id
       - name: scheduled_date
         description: "Installment due date."
       - name: scheduled_amount_usd

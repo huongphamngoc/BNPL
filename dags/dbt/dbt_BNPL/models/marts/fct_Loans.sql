@@ -9,15 +9,10 @@ SELECT
     principal_usd,
     term_months,
     apr,
+    disbursed_at,
     -- Phân tích Cohort: Lấy tháng, năm giải ngân
-    EXTRACT(year FROM disbursed_at) as cohort_year,
-    EXTRACT(month FROM disbursed_at) as cohort_month,
-    to_char(disbursed_at, 'YYYY-MM') as cohort_year_month,
+    cohort_year,
+    cohort_month,
     status as loan_status,
-    current_dpd,  
-    -- Định nghĩa nợ xấu (C-level metric)
-    case 
-        when status in ('delinquent', 'written_off') or current_dpd > 30 then 1 
-        else 0 
-    end as is_bad_loan
+    current_dpd
 FROM loans

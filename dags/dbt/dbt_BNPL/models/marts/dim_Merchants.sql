@@ -8,7 +8,7 @@ SELECT
     onboarded_date,
     risk_tier,
     CASE 
-        WHEN onboarded_date >= '2025-10-01' THEN 1 
-        ELSE 0 
+        WHEN onboarded_date >= '2025-10-01' THEN True 
+        ELSE False
     END AS is_new_merchant
 FROM merchants

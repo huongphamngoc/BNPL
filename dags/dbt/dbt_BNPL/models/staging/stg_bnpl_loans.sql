@@ -9,8 +9,8 @@ SELECT
     "principal_usd" AS principal_usd,
     "term_months" AS term_months,
     "apr" AS apr,
-    EXTRACT(year FROM CAST("disbursed_at" AS DATE)) as cohort_year,
-    EXTRACT(month FROM CAST("disbursed_at" AS DATE)) as cohort_month,
+    EXTRACT(year FROM "disbursed_at") AS cohort_year,
+    EXTRACT(month FROM "disbursed_at") AS cohort_month,
     CAST("disbursed_at" AS DATE) AS disbursed_at,
     "status" AS status,
     "current_dpd" AS current_dpd

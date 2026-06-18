@@ -13,6 +13,6 @@ SELECT
     -- Phân tích Cohort: Lấy tháng, năm giải ngân
     cohort_year,
     cohort_month,
-    status as loan_status,
+    status,
     current_dpd
 FROM loans

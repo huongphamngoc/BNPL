@@ -8,7 +8,7 @@ This repository contains a modern Data Engineering pipeline designed to build a 
 * **Transformation:** [dbt-core](https://www.getdbt.com/) & `dbt-snowflake`
 * **Data Warehouse:** [Snowflake](https://www.snowflake.com/)
 * **Integration:** [Astronomer Cosmos](https://astronomer.github.io/astronomer-cosmos/) (Dynamically converts dbt projects into Airflow DAGs)
-![Data Architecture](docs/BNPL_architecture.png)
+![Data Architecture](docs/BNBL_architecture.png)
 ## 📁 Project Structure
 
 The project follows dbt best practices, organizing data transformations into distinct layers:
